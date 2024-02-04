@@ -6,10 +6,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const args = getArgs();
-const username = args.find(arg => arg.param === 'username');
-if (username) {
-    console.log(`Welcome to the File Manager, ${username.value}!`);
-}
+const username = args.find(arg => arg.param === 'username' && arg.value)?.value ?? 'User';
+console.log(`Welcome to the File Manager, ${username}!`);
 
 fork(path.resolve(__dirname, 'modules', 'prompt.js'));
 
@@ -17,7 +15,7 @@ process.on('SIGINT', () => {
     process.exit(0);
 });
 
-process.on('exit', () => console.log(`Thank you for using File Manager, ${username.value}, goodbye!`));
+process.on('exit', () => console.log(`Thank you for using File Manager, ${username}, goodbye!`));
 
 function getArgs() {
     return process.argv

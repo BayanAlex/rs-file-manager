@@ -26,20 +26,20 @@ export async function ls(currentDir) {
     checkArgs(arguments, 1);
 
     const list = (await fs.readdir(currentDir, { withFileTypes: true }))
-        .reduce((res, v) => {
-            const type = v.isDirectory() ? 'directory' : 'file';
-            res[type].push({ Name: v.name, Type: type});
-            return res;
-        }, { directory: [], file: []});
-    const sortFunc = (a, b) => a.Name > b.Name ? 1 : -1;
-    list.directory.sort(sortFunc);
-    list.file.sort(sortFunc);
-    const result = [...list.directory, ...list.file];
-    if (!result.length) {
+        .map(v => ({ Name: v.name, Type: v.isDirectory() ? 'directory' : 'file' }))
+        .sort((a, b) => {
+            if (a.Type === 'directory' && b.Type !== 'directory')
+                return -1;
+            if (a.Type !== 'directory' && b.Type === 'directory')
+                return 1;
+            return a.Name.localeCompare(b.Name);
+        });
+
+    if (!list.length) {
         console.log('Directory is empty');
         return;
     }
-    console.table(result);
+    console.table(list);
 }
 
 export async function add(name, currentDir) {

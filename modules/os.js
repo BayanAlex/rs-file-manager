@@ -12,7 +12,7 @@ export function os(param) {
 
     if (param === '--cpus') {
         console.log(`Total CPUs: ${cpus().length}`)
-        console.table(cpus().map(cpu => ({ Model: cpu.model.trim(), Clock: `${cpu.speed} MHz` })));
+        console.table(cpus().map(cpu => ({ Model: cpu.model.trim(), Clock: `${(cpu.speed / 1000).toFixed(1)} GHz` })));
         return;
     }
 
